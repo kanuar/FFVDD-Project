@@ -11,9 +11,8 @@ reg [8:0]fifo[15:0];//9 BIT DATA WIDTH 1 BIT EXTRA FOR HEADER AND 16 DEPTH SIZE
 integer i;
 reg temp;
 reg [4:0] incrementer;
-
-//------------------------------------------------------------------------------
-//lfd_state
+//lfd_state:This block monitors the lfd_state signal.
+//It stores the state of lfd_state in the temp variable for future reference.
 always@(posedge clk)
 	begin
 		if(!resetn)
@@ -22,10 +21,10 @@ always@(posedge clk)
 			temp<=lfd_state;
 	end 
 
-
-//-------------------------------------------------------------------------------------------------------------------
 //Incrementer
-
+// This block calculates the incrementer value.
+// It takes into account the resetn signal and the read and write operations.
+// The incrementer is updated based on whether data is being written or read.
 always @(posedge clk )
 begin
    if( !resetn )
@@ -44,6 +43,9 @@ begin
 end
 
 //full and empty logic
+// This block determines whether the FIFO is full or empty based on the incrementer value.
+// If incrementer is zero, it sets empty to 1, indicating that the FIFO is empty.
+// If incrementer is 15 (binary 1111), it sets full to 1, indicating that the FIFO is full.
 always @(incrementer)
 begin
 if(incrementer==0)      //nothing in fifo
@@ -56,10 +58,11 @@ if(incrementer==0)      //nothing in fifo
    else
    full = 0;
 end 
-//-----------------------------------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------------------------------------------------
 //Fifo write logic
+// This block handles writing data into the FIFO.
+// It considers the resetn, soft_reset, write_enb, and FIFO full status.
+// When data is to be written (write_enb is asserted and FIFO is not full), it writes data into the appropriate location in the FIFO based on write_ptr.
 always@(posedge clk)
 	begin
 		if(!resetn || soft_reset)
@@ -73,9 +76,11 @@ always@(posedge clk)
 	
 	end
 
-//
-//----------------------------------------------------------------------------------------------------------------------------------------
+
 //FIFO READ logic
+// This block handles reading data from the FIFO.
+// It considers the resetn, soft_reset, read_enb, empty status, and count.
+// If data is available for reading (read_enb is asserted and FIFO is not empty), it reads data from the FIFO and decrements the internal counter (count) based on whether a header byte is being read.
 always@(posedge clk)
 	begin
 		if(!resetn)
@@ -92,8 +97,10 @@ always@(posedge clk)
 					dataout<=8'bz;
 			end
 	end
-//------------------------------------------------------------------------------------------------------------------------------------
+
 //counter logic
+// This block handles the internal counter (count) for tracking payload length.
+// When reading a header byte, it loads the counter with the payload length and starts decrementing it every clock cycle until it reaches zero
 always@(posedge clk)
 	begin
 		
@@ -109,8 +116,11 @@ always@(posedge clk)
 			end
 	
 	end
-//---------------------------------------------------------------------------------------------------------------
 //pointer logic
+// This block updates the read and write pointers for the FIFO.
+// It takes into account resetn, soft_reset, write_enb, and read_enb signals.
+// When data is written (write_enb is asserted), it increments the write_ptr.
+// When data is read (read_enb is asserted), it increments the read_ptr.
 always@(posedge clk)
 	begin
 		if(!resetn || soft_reset)
