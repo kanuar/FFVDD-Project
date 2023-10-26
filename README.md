@@ -1,2 +1,2 @@
 # FFVDD-Project
-Architectural desig of data router in verilog
+Architectural design of data router in verilog
