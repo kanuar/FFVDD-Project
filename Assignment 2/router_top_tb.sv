@@ -1,11 +1,18 @@
 module router_top_tb();
 
-reg clk, resetn, read_enb_0, read_enb_1, read_enb_2, packet_valid;
+// signal declaration
+bit clk, resetn, read_enb_0, read_enb_1, read_enb_2, packet_valid;
 reg [7:0]datain;
 wire [7:0]data_out_0, data_out_1, data_out_2;
 wire vld_out_0, vld_out_1, vld_out_2, err, busy;
 integer i;
 
+// calling interface and test 
+router_intf intf(clk,resetn);
+counter_test test(intf);
+
+
+// creating DUT instance 
 router_top DUT(.clk(clk),
 			   .resetn(resetn),
 			   .read_enb_0(read_enb_0),
@@ -24,11 +31,15 @@ router_top DUT(.clk(clk),
 			   
 //clock generation
 
-initial 
-	begin
-	clk = 1;
-	forever 
-	#5 clk=~clk;
+always #5 clk=~clk;
+
+// reset generation as a part of directed testbench cases
+
+initial
+begin 
+	resetn=1;
+	#5;
+	reset=0;
 end
 
-// top module 
+endmodule
