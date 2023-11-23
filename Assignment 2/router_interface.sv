@@ -1,4 +1,4 @@
-interface router_intf(input logic clk,reset);
+interface router_intf(input logic clk,resetn);
 
 // signal declaration
 	logic load;
@@ -27,7 +27,7 @@ endclocking
 
 // modport instance declaration
 
-modport BFM (clocking bfm_router,input clk,reset);
-modport MONITOR(clocking monitor_router,input clk,reset);
+modport BFM (clocking bfm_router,input clk,resetn);
+modport MONITOR(clocking monitor_router,input clk,resetn);
 
 endinterface
