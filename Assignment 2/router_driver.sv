@@ -37,7 +37,7 @@ class router_bfm;
 			repeat(2)@(posedge intf.clk);
 			trans.data_out = intf.bfm_router.data_out;
 			trans.display();
-			no_transcations++;
+			this.no_transcations++;
 		end
 	endtask
 endclass
