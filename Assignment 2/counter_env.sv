@@ -3,9 +3,9 @@
 class router_env;
 	
 	// signal and instance declaration
-	router_gen gen;
-	router_bfm bfm;
-	router_cov cov;
+	virtual router_gen gen;
+	virtual router_bfm bfm;
+	virtual router_cov cov;
 
 	mailbox gen2bfm;
 

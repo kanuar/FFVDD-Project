@@ -39,7 +39,7 @@ module router_top_tb();
 	begin 
 		resetn=1;
 		#5;
-		reset=0;
+		resetn=0;
 	end
 
 endmodule
