@@ -1,50 +1,3 @@
-module router_top_tb();
-
-	// signal declaration
-	bit clk, resetn, read_enb_0, read_enb_1, read_enb_2, packet_valid;
-	reg [7:0]datain;
-	wire [7:0]data_out_0, data_out_1, data_out_2;
-	wire vld_out_0, vld_out_1, vld_out_2, err, busy;
-	integer i;
-
-	// calling interface and test 
-	router_intf intf(clk,resetn);
-	counter_test test(intf);
-
-
-	// creating DUT instance 
-	router_top DUT(.clk(clk),
-				   .resetn(resetn),
-				   .read_enb_0(read_enb_0),
-				   .read_enb_1(read_enb_1),
-				   .read_enb_2(read_enb_2),
-				   .packet_valid(packet_valid),
-				   .datain(datain),
-				   .data_out_0(data_out_0),
-				   .data_out_1(data_out_1),
-				   .data_out_2(data_out_2),
-				   .vldout_0(vld_out_0),
-				   .vldout_1(vld_out_1),
-				   .vldout_2(vld_out_2),
-				   .err(err),
-				   .busy(busy) );			   
-				   
-	//clock generation
-
-	always #5 clk=~clk;
-
-	// reset generation as a part of directed testbench cases
-
-	initial
-	begin 
-		resetn=1;
-		#5;
-		resetn=0;
-	end
-
-endmodule
-
-
 
 // router driver class
 // router driver is the same as router bfm
@@ -91,61 +44,6 @@ class router_bfm;
 endclass
 
 
-
-// router environment class
-
-class router_env;
-	
-	// signal and instance declaration
-	virtual router_gen gen;
-	virtual router_bfm bfm;
-	virtual router_cov cov;
-
-	mailbox gen2bfm;
-
-	virtual router_intf intf;
-
-	event ended;
-
-	// setter function for a new router interface 
-	function new(virtual router_intf i);
-		this.intf=i;
-		gen2bfm=new();
-		gen.new_gen(gen2bfm,ended);
-		bfm.new_bfm(intf,gen2bfm);
-		cov.new_cov();
-
-	endfunction
-
-	// pretest tasks to run before even starting the test cases section of the code
-	task pre_test;
-		bfm.reset();
-	endtask
-
-	// main task section to run test cases
-	task test;
-
-		fork
-		gen.main();
-		bfm.main();
-		cov.main();
-		// allowing the code to join back the main thread the moment any of the threads end execution
-		join_any
-
-	endtask
-
-	// post test cases task to run 
-	task post_test;
-
-		pre_test();
-		test();
-		post_task();
-		$finish;
-
-	endtask
-
-endclass
-
 // router coverage class
 
 
@@ -162,6 +60,10 @@ class router_cov;
       	DIN:coverpoint trans.data_in {bins Di= {[0:255]};}
       	DO:coverpoint trans.data_out {bins Do= {[0:255]};}
 	endgroup
+  	
+  function new();
+    cov_inst=new();
+  endfunction
 
 	// creating a new covergroup instance
 	function new_cov();
@@ -198,7 +100,7 @@ class router_gen;
 	task main;
 		repeat(repeat_count)
 		begin
-			trans=new;
+          trans=new();
 			if(!trans.randomize()) $fatal("Randomization Failed");
 			gen2bfm.put(trans);
 		end
@@ -281,3 +183,106 @@ class router_trans;
   endfunction
 
 endclass
+    
+
+// router environment class
+
+class router_env;
+	
+	// signal and instance declaration
+	router_gen gen;
+	router_bfm bfm;
+	router_cov cov;
+
+	mailbox gen2bfm;
+
+	virtual router_intf intf;
+
+	event ended;
+
+	// setter function for a new router interface 
+	function new(virtual router_intf i);
+		this.intf=i;
+		gen2bfm=new();
+		gen.new_gen(gen2bfm,ended);
+		bfm.new_bfm(intf,gen2bfm);
+		cov.new_cov();
+
+	endfunction
+
+	// pretest tasks to run before even starting the test cases section of the code
+	task pre_test;
+		bfm.reset();
+	endtask
+
+	// main task section to run test cases
+	task test;
+
+		fork
+		gen.main();
+		bfm.main();
+		cov.main();
+		// allowing the code to join back the main thread the moment any of the threads end execution
+		join_any
+
+	endtask
+
+	// post test cases task to run 
+	task post_test;
+
+		pre_test();
+		test();
+		post_task();
+		$finish;
+
+	endtask
+
+endclass
+    
+    
+// top module router 
+module router_top_tb();
+
+	// signal declaration
+	bit clk, resetn, read_enb_0, read_enb_1, read_enb_2, packet_valid;
+	reg [7:0]datain;
+	wire [7:0]data_out_0, data_out_1, data_out_2;
+	wire vld_out_0, vld_out_1, vld_out_2, err, busy;
+	integer i;
+
+	// calling interface and test 
+	router_intf intf(clk,resetn);
+	counter_test test(intf);
+
+
+	// creating DUT instance 
+	router_top DUT(.clk(clk),
+				   .resetn(resetn),
+				   .read_enb_0(read_enb_0),
+				   .read_enb_1(read_enb_1),
+				   .read_enb_2(read_enb_2),
+				   .packet_valid(packet_valid),
+				   .datain(datain),
+				   .data_out_0(data_out_0),
+				   .data_out_1(data_out_1),
+				   .data_out_2(data_out_2),
+				   .vldout_0(vld_out_0),
+				   .vldout_1(vld_out_1),
+				   .vldout_2(vld_out_2),
+				   .err(err),
+				   .busy(busy) );			   
+				   
+	//clock generation
+
+	always #5 clk=~clk;
+
+	// reset generation as a part of directed testbench cases
+
+	initial
+	begin 
+		resetn=1;
+		#5;
+		resetn=0;
+	end
+
+endmodule
