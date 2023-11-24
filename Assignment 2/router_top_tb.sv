@@ -12,8 +12,8 @@ module router_top_tb();
 	router_test test(intf);
 
 
-	// creating DUT instance 
-	router_top DUT(.clk(clk),
+	// creating dut instance 
+	router_top dut(.clk(clk),
 				   .resetn(resetn),
 				   .read_enb_0(read_enb_0),
 				   .read_enb_1(read_enb_1),
