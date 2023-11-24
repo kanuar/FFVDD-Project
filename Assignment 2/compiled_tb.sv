@@ -172,7 +172,8 @@ class router_trans;
   // signal declaration
       rand bit load;
       rand bit updown;
-      rand bit [7:0] data_in,data_out;
+      rand bit [7:0] data_in;
+      bit [7:0]data_out;
 
   //display function
 
