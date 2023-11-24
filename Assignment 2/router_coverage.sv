@@ -8,8 +8,8 @@ class router_cov;
 		option.per_instance=1;
 		LD:coverpoint trans.load {bins ld= {0,1};}
 		UD:coverpoint trans.updown {bins ud= {0,1};}
-		DIN:coverpoint trans.data_in {bins di= {[0:255]};}
-		DO:coverpoint trans.data_out {bins do= {[0:255]};}
+		DIN:coverpoint trans.data_in {bins Di= {[0:255]};}
+		DO:coverpoint trans.data_out {bins Do= {[0:255]};}
 	endgroup
 
 	// creating a new covergroup instance

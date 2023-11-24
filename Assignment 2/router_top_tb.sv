@@ -9,7 +9,7 @@ module router_top_tb();
 
 	// calling interface and test 
 	router_intf intf(clk,resetn);
-	counter_test test(intf);
+	router_test test(intf);
 
 
 	// creating DUT instance 

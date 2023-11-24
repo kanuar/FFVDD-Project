@@ -3,9 +3,9 @@
 class router_env;
 	
 	// signal and instance declaration
-	virtual router_gen gen;
-	virtual router_bfm bfm;
-	virtual router_cov cov;
+	router_gen gen;
+	router_bfm bfm;
+	router_cov cov;
 
 	mailbox gen2bfm;
 
@@ -45,9 +45,11 @@ class router_env;
 
 		pre_test();
 		test();
-		post_task();
+		post_test();
 		$finish;
 
 	endtask
-
+	task run();
+    	post_test();
+  	endtask
 endclass

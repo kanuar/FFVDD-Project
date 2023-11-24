@@ -21,7 +21,7 @@ class router_bfm;
 		intf.bfm_router.data_in <=0;
 		intf.bfm_router.data_out <=0;
 		wait(!intf.resetn);
-		$display("Reset finished")
+		$display("Reset finished");
 	endtask
 
 	// creating a main task that covers the non reset points 
@@ -37,7 +37,7 @@ class router_bfm;
 			repeat(2)@(posedge intf.clk);
 			trans.data_out = intf.bfm_router.data_out;
 			trans.display();
-			this.no_transcations++;
+			this.no_transactions++;
 		end
 	endtask
 endclass
